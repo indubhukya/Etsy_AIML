@@ -32,6 +32,12 @@
     \textit{Dublin City University}\\
     Dublin, Ireland \\
     indumanaswini.bhukya2@mail.dcu.ie}
+  \and
+  \IEEEauthorblockN{Rajesh Suddala}
+  \IEEEauthorblockA{\textit{School of Computing} \\
+    \textit{Dublin City University}\\
+    Dublin, Ireland \\
+    rajesh.suddala2@mail.dcu.ie}
 }
 
 \maketitle
@@ -423,11 +429,19 @@ distillation for production deployment.
 %% ── Team Member Contributions ─────────────────────────────────────────────────
 \section*{Team Member Contributions}
 
-\textbf{Indumanaswini Bhukya:} Conceived and implemented the full pipeline,
-including data loading, augmentation, ConvNeXt V2 and Swin Transformer training,
-embedding fusion, meta-learner benchmarking, TTA, threshold optimisation,
-Grad-CAM analysis, and final submission generation.  Wrote all sections of this
-report.
+\textbf{Indumanaswini Bhukya:} Led the backbone training and evaluation components,
+including the ConvNeXt V2 Tiny and Swin Transformer Tiny fine-tuning schedules,
+gradient clipping strategy, and checkpoint selection.  Implemented the embedding
+fusion pipeline, the 512-d feature extraction via forward hooks, and the
+StandardScaler normalisation.  Conducted Grad-CAM visualisation and failure-mode
+analysis.  Wrote Sections~I, III (Backbones, Embedding Fusion), IV.B, IV.D, and~V.
+
+\textbf{Rajesh Suddala:} Led the meta-learner benchmarking and inference pipeline,
+including XGBoost and CatBoost training, per-learner threshold optimisation, and
+the five-view test-time augmentation implementation.  Managed the dataset loading,
+stratified splitting, and data augmentation pipeline, and verified the integrity of
+the final submission.  Wrote Sections~II, III (TTA, Threshold Optimisation),
+IV.A, IV.C, and~VI.
 
 %% ── References ────────────────────────────────────────────────────────────────
 \bibliographystyle{IEEEtran}
