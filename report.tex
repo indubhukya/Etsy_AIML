@@ -191,16 +191,20 @@ failure modes:
         over-saturated colours compared with authentic photographs.
   \item \textbf{Image geometry} — a scatter plot of width vs.\ height and
         marginal histograms over 300 sampled images show that both classes share
-        a broad resolution range; most images lie between 300 and 1200\,px on
-        each side, with no systematic geometry gap between classes.
+        a broad resolution range (min~180\,px, max~2560\,px, mean~${\approx}$1000\,px),
+        with no systematic geometry gap between classes (Class~0 mean 1002$\times$1025\,px;
+        Class~1 mean 998$\times$975\,px).
   \item \textbf{Per-class colour statistics} — per-channel (RGB) mean intensity
-        histograms over 200 sampled images indicate that AI-generated images
-        tend to have slightly higher mean blue channel values than authentic
-        photographs, consistent with synthetic sky or background overrepresentation.
-  \item \textbf{File size} — file-size histograms and box-plots show that
-        AI-generated images are on average 15--25\,KB larger than authentic
-        photographs, suggesting higher JPEG quality or PNG usage by generative
-        pipelines.
+        histograms over 200 sampled images reveal that AI-generated images
+        carry slightly higher mean red (0.650 vs.\ 0.634) and green (0.608 vs.\
+        0.598) channel values than authentic photographs, while the blue channel
+        is nearly identical (0.572 vs.\ 0.571), suggesting that generative
+        models produce warmer-toned imagery on this dataset.
+  \item \textbf{File size} — file-size histograms and box-plots reveal that
+        authentic photographs are on average larger than AI-generated images
+        (202.8\,KB vs.\ 186.3\,KB), suggesting that the source dataset
+        contains higher-resolution authentic product photographs, while the
+        generative pipeline outputs more compressed images.
 \end{enumerate}
 
 All images are resized to $224 \times 224$ pixels.  During training, a
@@ -369,16 +373,38 @@ illustrates the threshold vs.\ F1 curve.
 
 \subsection{Full Pipeline Evaluation}
 
-The confusion matrix (Figure~\ref{fig:cm}) and ROC curve (AUC displayed from
-cell~7 output) characterise the final validation performance.  The
-classification report from cell~7 provides per-class precision and recall
-figures; false positives (authentic images predicted as AI-generated) are
-primarily images with uniform, texture-heavy backgrounds, while false negatives
-(AI-generated images missed by the model) tend to display photorealistic
-lighting and minimal generative artefacts.  A McNemar's test (using
+The final pipeline (CatBoost + 5-view TTA, $\tau^{*}=0.68$) achieves
+\textbf{validation F1~=~0.8771} and \textbf{AUC~=~0.9425} on the 960-sample
+held-out validation split.  Table~\ref{tab:final} reports the full
+classification metrics; both classes reach per-class F1 of 0.88 at an overall
+accuracy of 88\%.
+
+\begin{table}[t]
+  \caption{Final Validation Classification Report (CatBoost + 5-view TTA)}
+  \label{tab:final}
+  \centering
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{Support} \\
+    \midrule
+    0 (Authentic) & 0.90 & 0.87 & 0.88 & 497 \\
+    1 (AI-gen.)   & 0.86 & 0.89 & 0.88 & 463 \\
+    \midrule
+    \textit{Accuracy} & \multicolumn{4}{c}{0.88 \quad (960 samples)} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The confusion matrix (Figure~\ref{fig:cm}) shows TP~=~414, FP~=~67, TN~=~430,
+FN~=~49, corresponding to a sensitivity (recall for AI-generated images) of
+89.4\% and a specificity (recall for authentic images) of 86.5\%.  False
+positives are predominantly authentic images with uniform, texture-heavy
+backgrounds, while false negatives tend to be highly photorealistic AI-generated
+images with minimal generative artefacts.  A McNemar's test (using
 \texttt{statsmodels}) comparing the ConvNeXt V2 Tiny standalone classifier
-to the full ensemble confirms that the improvement in correct classifications is
-statistically significant ($p < 0.05$).
+to the full ensemble yields $p = 0.0001$, confirming a statistically
+significant improvement ($\alpha = 0.05$).
 
 \begin{figure}[t]
   \centering
